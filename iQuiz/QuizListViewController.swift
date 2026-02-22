@@ -6,18 +6,36 @@
 //
 import UIKit
 
-struct QuizTopic {
-    let title: String
-    let desc: String
-    let iconName: String
-}
-
 class QuizListViewController: UITableViewController {
 
-    let quizTopics: [QuizTopic] = [
-        QuizTopic(title: "Mathematics", desc: "Test your math skills.", iconName: "function"),
-        QuizTopic(title: "Marvel Super Heroes", desc: "How well do you know Marvel?", iconName: "bolt.fill"),
-        QuizTopic(title: "Science", desc: "Explore basic science trivia.", iconName: "atom")
+    let quizzes: [Quiz] = [
+        Quiz(
+            title: "Mathematics",
+            desc: "Test your math skills.",
+            iconName: "function",
+            questions: [
+                QuizQuestion(text: "2 + 2 = ?", answers: ["3", "4", "5"], correctIndex: 1),
+                QuizQuestion(text: "10 / 2 = ?", answers: ["3", "5", "8"], correctIndex: 1)
+            ]
+        ),
+        Quiz(
+            title: "Marvel Super Heroes",
+            desc: "How well do you know Marvel?",
+            iconName: "bolt.fill",
+            questions: [
+                QuizQuestion(text: "Spider-Man is from:", answers: ["DC", "Marvel"], correctIndex: 1),
+                QuizQuestion(text: "Iron Man’s real name is:", answers: ["Tony Stark", "Bruce Wayne"], correctIndex: 0)
+            ]
+        ),
+        Quiz(
+            title: "Science",
+            desc: "Explore basic science trivia.",
+            iconName: "atom",
+            questions: [
+                QuizQuestion(text: "Water freezes at:", answers: ["0°C", "100°C"], correctIndex: 0),
+                QuizQuestion(text: "Earth is the ___ planet from the sun:", answers: ["2nd", "3rd", "4th"], correctIndex: 1)
+            ]
+        )
     ]
 
     override func viewDidLoad() {
@@ -33,28 +51,34 @@ class QuizListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return quizTopics.count
+        quizzes.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "TopicCell")
-
-        let topic = quizTopics[indexPath.row]
-        cell.textLabel?.text = topic.title
-        cell.detailTextLabel?.text = topic.desc
-        cell.imageView?.image = UIImage(systemName: topic.iconName)
-
+        let quiz = quizzes[indexPath.row]
+        cell.textLabel?.text = quiz.title
+        cell.detailTextLabel?.text = quiz.desc
+        cell.imageView?.image = UIImage(systemName: quiz.iconName)
         cell.accessoryType = .disclosureIndicator
         return cell
     }
 
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "ShowQuestion", sender: indexPath)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowQuestion",
+           let indexPath = sender as? IndexPath,
+           let vc = segue.destination as? QuestionViewController {
+            vc.quiz = quizzes[indexPath.row]
+        }
+    }
+
     @objc private func didTapSettings() {
-        let alert = UIAlertController(title: "Settings",
-                                      message: "Settings go here",
-                                      preferredStyle: .alert)
+        let alert = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
 }
-

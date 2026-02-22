@@ -14,6 +14,8 @@
 		26369EDC2F410D2B00C7F649 /* Exceptions for "iQuiz" folder in "iQuiz" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AnswerViewController.swift,
+				FinishedViewController.swift,
 				Info.plist,
 			);
 			target = 26369EC92F410D2800C7F649 /* iQuiz */;
