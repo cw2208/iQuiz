@@ -24,6 +24,16 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         tableView.dataSource = self
         tableView.delegate = self
         loadQuestion()
+        
+        showSwipeTipIfNeeded()
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeRight))
+        swipeRight.direction = .right
+        view.addGestureRecognizer(swipeRight)
+
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
+        swipeLeft.direction = .left
+        view.addGestureRecognizer(swipeLeft)
+        
     }
 
     private func loadQuestion() {
@@ -34,8 +44,6 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         questionLabel.text = q.text
         tableView.reloadData()
     }
-
-    // MARK: Table
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         quiz.questions[questionIndex].answers.count
@@ -55,7 +63,6 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
         tableView.reloadData()
     }
 
-    // MARK: Submit
 
     @IBAction func submitTapped(_ sender: Any) {
         performSegue(withIdentifier: "ShowAnswer", sender: nil)
@@ -75,6 +82,32 @@ class QuestionViewController: UIViewController, UITableViewDataSource, UITableVi
             vc.questionIndex = questionIndex
             vc.score = score
             vc.pickedIndex = picked
+        }
+    }
+    @objc func handleSwipeRight() {
+        if selectedAnswerIndex != nil {
+            performSegue(withIdentifier: "ShowAnswer", sender: nil)
+        }
+    }
+
+    @objc func handleSwipeLeft() {
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    func showSwipeTipIfNeeded() {
+        let hasSeenTip = UserDefaults.standard.bool(forKey: "hasSeenSwipeTip")
+
+        if !hasSeenTip {
+            let alert = UIAlertController(
+                title: "Tip",
+                message: "Swipe right to continue. Swipe left to abandon the quiz.",
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: "Got it", style: .default))
+
+            present(alert, animated: true)
+
+            UserDefaults.standard.set(true, forKey: "hasSeenSwipeTip")
         }
     }
 }

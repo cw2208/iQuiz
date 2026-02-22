@@ -20,10 +20,25 @@ class FinishedViewController: UIViewController {
         } else {
             summaryLabel.text = "Keep trying!"
         }
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeRight))
+            swipeRight.direction = .right
+            view.addGestureRecognizer(swipeRight)
+
+            let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeLeft))
+            swipeLeft.direction = .left
+            view.addGestureRecognizer(swipeLeft)
     }
 
     @IBAction func nextTapped(_ sender: Any) {
-        // easiest: pop back to root list
+        navigationController?.popToRootViewController(animated: true)
+    }
+    
+    @objc func handleSwipeRight() {
+        nextTapped(self)
+    }
+
+    @objc func handleSwipeLeft() {
         navigationController?.popToRootViewController(animated: true)
     }
 }
