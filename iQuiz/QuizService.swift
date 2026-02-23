@@ -1,5 +1,5 @@
 //
-//  Quiz.swift
+//  QuizService.swift
 //  iQuiz
 //
 //  Created by Christina Wang on 2/22/26.
@@ -12,7 +12,8 @@ enum QuizServiceError: Error {
 }
 
 final class QuizService {
-    static func fetchQuizzes(from urlString: String, completion: @escaping (Result<[RemoteQuiz], Error>) -> Void) {
+
+    static func fetchQuizData(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
         guard let url = URL(string: urlString) else {
             completion(.failure(QuizServiceError.badURL))
             return
@@ -29,13 +30,11 @@ final class QuizService {
                 completion(.failure(QuizServiceError.noData))
                 return
             }
-
-            do {
-                let decoded = try JSONDecoder().decode([RemoteQuiz].self, from: data)
-                completion(.success(decoded))
-            } catch {
-                completion(.failure(error))
-            }
+            completion(.success(data))
         }.resume()
+    }
+
+    static func decodeQuizzes(from data: Data) throws -> [RemoteQuiz] {
+        try JSONDecoder().decode([RemoteQuiz].self, from: data)
     }
 }

@@ -1,9 +1,10 @@
 //
-//  NetworkModels.swift
+//  RemoteModels.swift
 //  iQuiz
 //
 //  Created by Christina Wang on 2/22/26.
 //
+
 import Foundation
 
 struct RemoteQuiz: Codable {
@@ -14,6 +15,6 @@ struct RemoteQuiz: Codable {
 
 struct RemoteQuestion: Codable {
     let text: String
-    let answer: String    
+    let answer: String
     let answers: [String]
 }
